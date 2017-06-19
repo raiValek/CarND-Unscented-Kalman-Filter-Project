@@ -67,6 +67,7 @@ public:
   ///* Sigma point spreading parameter
   double lambda_;
 
+  int n_sigma_;
 
   /**
    * Constructor
@@ -102,6 +103,32 @@ public:
    * @param meas_package The measurement at k+1
    */
   void UpdateRadar(MeasurementPackage meas_package);
+
+private:
+  /**
+   * Generates Sigma Points out of the member state vector x_
+   * @param sigma_out A reference to matrix that will contain the sigma points
+   */
+  void GenerateAugmentedSigmaPoints(MatrixXd& sigma_out) const;
+
+  /**
+   * Predicts the next Sigma Points using the process modell
+   * @param sigma_in A reference to the Sigma Points of the current state
+   * @param dt The timestep between the last and the predicted state
+   */
+  void PredictSigmaPoints(const MatrixXd& sigma_in, const double dt);
+
+  /**
+   * Transforms the predicted Sigma Points to a state vector and a covariance matrix
+   */
+  void PredictMeanAndCovariance();
+
+  /**
+   * Predicts the mean and covariance of a radar measurement
+   * @param z_out A reference to the calculated radar measurement mean vector
+   * @param S_out A reference to the calculated radar measurement covariance matrix
+   */
+  void PredictRadarMeasurement(VectorXd& z_out, MatrixXd& S_out);
 };
 
 #endif /* UKF_H */
